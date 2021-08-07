@@ -1,0 +1,50 @@
+class UnacceptableRank(Exception):
+    pass
+
+
+class User:
+    def __init__(self):
+        self.__rank = -8
+        self.__progress = 0
+        self.__rankdict = [-8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8]
+        self.__i = 0
+
+    def inc_progress(self, rank):
+        if rank not in self.__rankdict:
+            raise UnacceptableRank("This rank isn't allowed")
+        if not self.__rank < 0 and not rank > 0:
+            if rank == self.__rank:
+                self.__progress += 3
+            elif rank+1 == self.__rank:
+                self.__progress += 1
+            elif rank > self.__rank:
+                d = rank - self.__rank
+                self.__progress += 10 * d * d
+        else:
+            if self.__rank != 8:
+                if rank == self.__rank:
+                    self.__progress += 3
+                elif rank + 2 == self.__rank:
+                    self.__progress += 1
+                elif rank > self.__rank:
+                    d = rank - self.__rank - 1
+                    self.__progress += 10 * d * d
+        if self.__progress > (16 - self.__i) * 100:
+            raise UnacceptableRank
+        if self.__i <= 14:
+            while self.__progress >= 100:
+                self.__progress -= 100
+                self.__i += 1
+                self.__rank = self.__rankdict[self.__i]
+        elif self.__i == 14 and self.__progress >= 100:
+            self.__progress -= 100
+            self.__rank = 8
+            self.__i += 1
+
+    def you_returner(self):
+        return f'your rank: {self.__rank} \nyour progress: {self.__progress}/100 points'
+
+
+a = User()
+a.inc_progress(-6)
+print(a.you_returner())
